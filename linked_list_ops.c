@@ -17,7 +17,7 @@ size_t list_len(const list_t *head)
 		current = current->next;
 	}
 
-	return count;
+	(return count);
 }
 
 /**
@@ -33,11 +33,11 @@ char **list_to_strings(const list_t *head)
 	size_t i = 0;
 
 	if (!head || count == 0)
-		return NULL;
+		(return NULL);
 
 	strs = (char **)malloc(sizeof(char *) * (count + 1));
 	if (!strs)
-		return NULL;
+		(return NULL);
 
 	for (; head; head = head->next)
 	{
@@ -47,13 +47,13 @@ char **list_to_strings(const list_t *head)
 			while (i > 0)
 				free(strs[--i]);
 			free(strs);
-			return NULL;
+			(return NULL);
 		}
 		i++;
 	}
 
 	strs[count] = NULL;
-	return strs;
+	(return strs);
 }
 
 /**
@@ -69,24 +69,25 @@ size_t print_list(const list_t *h)
 	while (h)
 	{
 		const char *str = h->str;
+
 		if (!str || *str == '\0')
 			str = "(nil)";
 
 		if (_puts(convert_number(h->num, 10, 0)) == -1 || _putchar(':') == -1 ||
 			_putchar(' ') == -1 || _puts(str) == -1 || _putchar('\n') == -1)
 		{
-			return i;
+			(return i);
 		}
 
 		h = h->next;
 		i++;
 	}
 
-	return i;
+	(return i);
 }
 
 /**
- * node_starts_with - Find a node whose string starts with a prefix and optionally matches a character.
+ * node_starts_with - Find a node whose string starts with a prefix.
  * @head: Pointer to the first node of the linked list.
  * @prefix: The prefix to match.
  * @c: The character to match (-1 for any character).
@@ -109,13 +110,13 @@ list_t *node_starts_with(const list_t *head, const char *prefix, char c)
 				continue;
 			}
 
-			return (list_t *)current_node;
+			(return (list_t *)current_node);
 		}
 
 		current_node = current_node->next;
 	}
 
-	return NULL;
+	(return NULL);
 }
 
 /**
@@ -132,11 +133,11 @@ size_t get_node_index(const list_t *head, const list_t *node)
 	while (head)
 	{
 		if (head == node)
-			return index;
+			(return index);
 
 		head = head->next;
 		index++;
 	}
 
-	return (size_t)-1;
+	(return (size_t)-1);
 }

@@ -14,7 +14,7 @@ char *_memset(char *s, char b, unsigned int n)
 	{
 		s[i] = b;
 	}
-	return s;
+	(return s);
 }
 
 /**
@@ -25,7 +25,7 @@ void ffree(char **pp)
 {
 	if (!pp)
 	{
-		return; // Check for NULL pointer
+		return;
 	}
 
 	for (char **a = pp; *a; a++)
@@ -46,30 +46,30 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
 	if (!ptr)
 	{
-		return malloc(new_size);
+		(return malloc(new_size));
 	}
 
 	if (new_size == 0)
 	{
 		free(ptr);
-		return NULL;
+		(return NULL);
 	}
 
 	if (new_size == old_size)
 	{
-		return ptr;
+		(return ptr);
 	}
 
 	void *p = malloc(new_size);
 
 	if (!p)
 	{
-		return NULL;
+		(return NULL);
 	}
 
 	memcpy(p, ptr, (old_size < new_size) ? old_size : new_size);
 
 	free(ptr);
 
-	return p;
+	(return p);
 }

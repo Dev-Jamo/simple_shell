@@ -1,5 +1,5 @@
 #include "shell_master.h"
-#include <stddef.h> 
+#include <stddef.h>
 
 /**
  * _strlen - Get the length of a string
@@ -9,15 +9,16 @@
 size_t _strlen(const char *s)
 {
 	if (!s)
-		return 0;
+		(return 0;)
 
 	size_t length = 0;
+
 	while (s[length] != '\0')
 	{
 		length++;
 	}
 
-	return length;
+	(return length);
 }
 
 /**
@@ -37,7 +38,7 @@ int _strcmp(const char *s1, const char *s2)
 		s2++;
 	}
 
-	return *(unsigned char *)s1 - *(unsigned char *)s2;
+	(return *(unsigned char *)s1 - *(unsigned char *)s2);
 }
 
 /**
@@ -54,13 +55,13 @@ const char *starts_with(const char *haystack, const char *needle)
 	{
 		if (*needle != *haystack)
 		{
-			return NULL;
+			(return NULL);
 		}
 		needle++;
 		haystack++;
 	}
 
-	return haystack;
+	(return haystack);
 }
 
 /**
@@ -85,5 +86,5 @@ char *_strcat(char *dest, const char *src)
 
 	*dest = '\0';
 
-	return ret;
+	(return ret);
 }

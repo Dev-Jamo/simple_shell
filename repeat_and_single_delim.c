@@ -1,67 +1,60 @@
 #include "shell_master.h"
 
 /**
- * **strtow - splits a string into words, repeat delimiters are ignored.
- * @str: input string
- * @d: delimiter string
- * Return: a pointer to an array of strings, or NULL on failure.
+ * is_delim - Check if a character is a delimiter.
+ * @c: Character to check.
+ * @delimiters: String containing delimiter characters.
+ * Return: 1 if the character is a delimiter, 0 otherwise.
  */
-int is_delim(char c, char *delimiters)
+int is_delim(char c, const char *delimiters)
 {
-    if (!delimiters)
-        delimiters = " ";
-    
-    return strchr(delimiters, c) != NULL;
+	if (!delimiters)
+	delimiters = " ";
+
+	(return strchr(delimiters, c) != NULL);
 }
 
-char **strtow(char *str, char *d)
+/**
+ * count_words - Count the number of words in a string.
+ * @str: String to count words in.
+ * @delimiters: String containing delimiter characters.
+ * Return: The number of words.
+ */
+static int count_words(const char *str, const char *delimiters)
 {
-    int i, j, k, m, numwords = 0;
-    char **s;
+}
 
-    if (str == NULL || str[0] == '\0')
-        return NULL;
-    
-    if (!d)
-        d = " ";
+/**
+ * allocate_and_copy - Allocate memory and copy a substring.
+ * @str: Source string.
+ * @start: Starting index.
+ * @end: Ending index.
+ * Return: Pointer to the duplicated substring.
+ */
+static char *allocate_and_copy(const char *str, int start, int end)
+{
+}
 
-    for (i = 0; str[i] != '\0'; i++)
-    {
-        if (!is_delim(str[i], d) && (is_delim(str[i + 1], d) || str[i + 1] == '\0'))
-            numwords++;
-    }
+/**
+ * strtow - Split a string into words.
+ * @str: String to be split.
+ * @delimiters: String containing delimiter characters.
+ * Return: A pointer to an array of strings, or NULL on failure.
+ */
+char **strtow(char *str, const char *delimiters)
+{
+	if (str == NULL || str[0] == '\0')
+	(return NULL);
 
-    if (numwords == 0)
-        return NULL;
+	int i = 0, j = 0, numwords = count_words(str, delimiters);
+	char **s;
 
-    s = (char **)malloc((numwords + 1) * sizeof(char *));
-    if (!s)
-        return NULL;
+	if (numwords == 0)
+	(return NULL);
 
-    for (i = 0, j = 0; j < numwords; j++)
-    {
-        while (is_delim(str[i], d))
-            i++;
+	s = (char **)malloc((numwords + 1) * sizeof(char *));
+	if (!s)
+	(return NULL);
 
-        k = 0;
-        while (!is_delim(str[i + k], d) && str[i + k] != '\0')
-            k++;
-
-        s[j] = (char *)malloc((k + 1) * sizeof(char));
-        if (!s[j])
-        {
-            for (k = 0; k < j; k++)
-                free(s[k]);
-            free(s);
-            return NULL;
-        }
-
-        for (m = 0; m < k; m++)
-            s[j][m] = str[i++];
-
-        s[j][m] = '\0';
-    }
-
-    s[j] = NULL;
-    return s;
+	(return s);
 }

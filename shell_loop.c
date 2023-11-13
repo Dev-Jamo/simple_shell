@@ -59,7 +59,7 @@ int hsh(info_t *info, char **av)
 		exit(info->err_num);
 	}
 
-	return builtin_ret;
+	(return builtin_ret);
 }
 
 /**
@@ -96,7 +96,7 @@ int find_builtin(info_t *info)
 		}
 	}
 
-	return built_in_ret;
+	(return built_in_ret);
 }
 
 /**
@@ -138,14 +138,15 @@ void find_cmd(info_t *info)
 	}
 	else
 	{
-		if ((interactive(info) || _getenv(info, "PATH=") || info->argv[0][0] == '/') && is_cmd(info, info->argv[0]))
+		if ((interactive(info) || _getenv(info, "PATH=") || info->argv[0][0] == '/')
+				&& is_cmd(info, info->argv[0]))
 		{
 			fork_cmd(info);
 		}
 		else if (*(info->arg) != '\n')
 		{
 			info->status = 127;
-			print_error(info, "Command not found\n"); 
+			print_error(info, "Command not found\n");
 		}
 	}
 }
@@ -171,7 +172,7 @@ void fork_cmd(info_t *info)
 		{
 			perror("Execve error:");
 			free_info(info, 1);
-			exit(EXIT_FAILURE); // Use EXIT_FAILURE for better clarity
+			exit(EXIT_FAILURE);
 		}
 	}
 	else

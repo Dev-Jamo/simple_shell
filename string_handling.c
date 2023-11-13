@@ -1,190 +1,95 @@
-#include "shell_master.h"
+#include <stdlib.h>
+#include <unistd.h>
+
+#define WRITE_BUF_SIZE 1024
+#define BUF_FLUSH '\0'
 
 /**
- * hsh - Main shell loop
- * @info: param & return info struct
- * @av: arg vector from main()
- * Return: 0 on success, 1 on error, or error code.
- **/
-int hsh(info_t *info, char **av)
+ * copy_string - Copy a string.
+ * @destination: Destination string
+ * @source: Source string.
+ * Return: Pointer to destination.
+ */
+char *copy_string(char *destination, const char *source)
 {
-	ssize_t r = 0;
-	int builtin_ret = 0;
+	int i = 0;
 
-	while (r != -1 && builtin_ret != -2)
+	if (destination == source || source == NULL)
+		(return destination);
+
+	while (source[i])
 	{
-		clear_info(info);
-
-		if (interactive(info))
-		{
-			_puts("$ ");
-		}
-
-		_eputchar(BUF_FLUSH);
-		r = get_input(info);
-
-		if (r != -1)
-		{
-			set_info(info, av);
-			builtin_ret = find_builtin(info);
-
-			if (builtin_ret == -1)
-			{
-				find_cmd(info);
-			}
-		}
-		else if (interactive(info))
-		{
-			_putchar('\n');
-		}
-
-		free_info(info, 0);
+		destination[i] = source[i];
+		i++;
 	}
 
-	write_history(info);
-	free_info(info, 1);
-
-	if (!interactive(info) && info->status)
-	{
-		exit(info->status);
-	}
-
-	if (builtin_ret == -2)
-	{
-		if (info->err_num == -1)
-		{
-			exit(info->status);
-		}
-
-		exit(info->err_num);
-	}
-
-	return builtin_ret;
+	destination[i] = '\0';
+	(return destination);
 }
 
 /**
- * find_builtin - it finds a builtin command.
- * @info: param & return info struct
- * Return: -1 if builtin not found,
- * 0 if builtin executed successfully,
- * 1 if builtin found but not successful,
- * 2 if builtin signals exit().
- **/
-int find_builtin(info_t *info)
+ * duplicate_string - Duplicate a string.
+ * @string_to_duplicate: String to duplicate.
+ * Return: Pointer to the duplicated string or NULL on failure.
+ */
+char *duplicate_string(const char *string_to_duplicate)
 {
-	int built_in_ret = -1;
+	if (string_to_duplicate == NULL)
+		(return NULL);
 
-	const builtin_table builtintbl[] = {
-		{"exit", _myexit},
-		{"env", _myenv},
-		{"help", _myhelp},
-		{"history", _myhistory},
-		{"setenv", _mysetenv},
-		{"unsetenv", _myunsetenv},
-		{"cd", _mycd},
-		{"alias", _myalias},
-		{NULL, NULL}
-	};
+	size_t length = 0;
 
-	for (int i = 0; builtintbl[i].type != NULL; i++)
-	{
-		if (_strcmp(info->argv[0], builtintbl[i].type) == 0)
-		{
-			info->line_count++;
-			built_in_ret = builtintbl[i].func(info);
-			break;
-		}
-	}
+	while (string_to_duplicate[length])
+		length++;
 
-	return built_in_ret;
+	char *result = malloc(sizeof(char) * (length + 1));
+
+	if (!result)
+		(return NULL);
+
+	for (size_t i = 0; i < length; i++)
+		result[i] = string_to_duplicate[i];
+
+	result[length] = '\0';
+	(return result);
 }
 
 /**
- * find_cmd - Finds a cmd in PATH
- * @info: param & return info struct.
- **/
-void find_cmd(info_t *info)
+ * print_string - Print a string to the stdout.
+ * @string_to_print: String to be printed.
+ */
+void print_string(const char *string_to_print)
 {
-	char *path = NULL;
-	int numArgs = 0;
-
-	info->path = info->argv[0];
-
-	if (info->linecount_flag == 1)
-	{
-		info->line_count++;
-		info->linecount_flag = 0;
-	}
-
-	for (int argIndex = 0; info->arg[argIndex]; argIndex++)
-	{
-		if (!is_delim(info->arg[argIndex], " \t\n"))
-		{
-			numArgs++;
-		}
-	}
-
-	if (numArgs == 0)
-	{
+	if (!string_to_print)
 		return;
-	}
 
-	path = find_path(info, _getenv(info, "PATH="), info->argv[0]);
+	int i = 0;
 
-	if (path)
+	while (string_to_print[i] != '\0')
 	{
-		info->path = path;
-		fork_cmd(info);
-	}
-	else
-	{
-		if ((interactive(info) || _getenv(info, "PATH=") || info->argv[0][0] == '/') && is_cmd(info, info->argv[0]))
-		{
-			fork_cmd(info);
-		}
-		else if (*(info->arg) != '\n')
-		{
-			info->status = 127;
-			print_error(info, "Command not found\n"); 
-		}
+		write_character(string_to_print[i]);
+		i++;
 	}
 }
 
 /**
- * fork_cmd - Forks an exec thread to run cmd
- * @info: param & return info struct.
- **/
-void fork_cmd(info_t *info)
+ * write_character - Write a character to stdout.
+ * @character_to_write: Character to print
+ * Return: On success 1, on error -1.
+ */
+int write_character(char character_to_write)
 {
-	pid_t child_pid;
+	static int i = 1;
+	static char buffer[WRITE_BUF_SIZE];
 
-	child_pid = fork();
-	if (child_pid == -1)
+	if (character_to_write == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
-		perror("Fork error:");
-		return;
+		write(1, buffer, i);
+		i = 0;
 	}
 
-	if (child_pid == 0)
-	{
-		if (execve(info->path, info->argv, get_environ(info)) == -1)
-		{
-			perror("Execve error:");
-			free_info(info, 1);
-			exit(EXIT_FAILURE); // Use EXIT_FAILURE for better clarity
-		}
-	}
-	else
-	{
-		wait(&(info->status));
-		if (WIFEXITED(info->status))
-		{
-			info->status = WEXITSTATUS(info->status);
+	if (character_to_write != BUF_FLUSH)
+		buffer[i++] = character_to_write;
 
-			if (info->status == PERMISSION_DENIED_ERROR)
-			{
-				print_error(info, "Permission denied\n");
-			}
-		}
-	}
+	(return 1);
 }
