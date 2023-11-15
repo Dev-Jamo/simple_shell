@@ -14,12 +14,8 @@ int hsh(info_t *info, char **av)
 	while (r != -1 && builtin_ret != -2)
 	{
 		clear_info(info);
-
 		if (interactive(info))
-		{
-			_puts("$ ");
-		}
-
+		{	_puts("$ ");	}
 		_eputchar(BUF_FLUSH);
 		r = get_input(info);
 
@@ -27,23 +23,17 @@ int hsh(info_t *info, char **av)
 		{
 			set_info(info, av);
 			builtin_ret = find_builtin(info);
-
 			if (builtin_ret == -1)
 			{
 				find_cmd(info);
 			}
 		}
 		else if (interactive(info))
-		{
-			_putchar('\n');
-		}
-
+		{	_putchar('\n');	}
 		free_info(info, 0);
 	}
-
 	write_history(info);
 	free_info(info, 1);
-
 	if (!interactive(info) && info->status)
 	{
 		exit(info->status);
@@ -56,7 +46,6 @@ int hsh(info_t *info, char **av)
 		}
 		exit(info->err_num);
 	}
-
 	(return builtin_ret);
 }
 
@@ -113,39 +102,27 @@ void find_cmd(info_t *info)
 		info->line_count++;
 		info->linecount_flag = 0;
 	}
-
 	for (int argIndex = 0; info->arg[argIndex]; argIndex++)
 	{
 		if (!is_delim(info->arg[argIndex], " \t\n"))
-		{
-			numArgs++;
-		}
+		{			numArgs++;	}
 	}
-
 	if (numArgs == 0)
 	{
 		return;
 	}
-
 	path = find_path(info, _getenv(info, "PATH="), info->argv[0]);
-
 	if (path)
-	{
-		info->path = path;
-		fork_cmd(info);
-	}
+	{		info->path = path;
+		fork_cmd(info);	}
 	else
 	{
 		if ((interactive(info) || _getenv(info, "PATH=") || info->argv[0][0] == '/')
 				&& is_cmd(info, info->argv[0]))
-		{
-			fork_cmd(info);
-		}
+		{			fork_cmd(info);	}
 		else if (*(info->arg) != '\n')
-		{
-			info->status = 127;
-			print_error(info, "Command not found\n");
-		}
+		{	info->status = 127;
+			print_error(info, "Command not found\n");		}
 	}
 }
 

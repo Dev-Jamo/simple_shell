@@ -165,9 +165,7 @@ int read_history(info_t *info)
  *
  * Return: Always 0.
  **/
-
-int build_history_list(info_t *info,
-				char *buffer, int line_count)
+int build_history_list(info_t *info, char *buffer, int line_count)
 {
 	list_t *current_node = NULL;
 
@@ -188,9 +186,7 @@ int build_history_list(info_t *info,
  *
  * Return: New histcount.
  **/
-
 int renumber_history(info_t *info)
-
 {
 	list_t *current_node = info->history;
 	int i = 0;
@@ -203,5 +199,4 @@ int renumber_history(info_t *info)
 
 	return (info->histcount = i);
 }
-
 
