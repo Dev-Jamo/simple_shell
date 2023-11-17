@@ -15,7 +15,7 @@ char **update_environ(info_t *info)
 		info->environ = list_to_strings(info->environ);
 		info->env_changed = 0;
 	}
-	return info->environ;
+	return (info->environ);
 }
 
 /**
@@ -75,6 +75,7 @@ int set_environ_variable(info_t *info, char *variable, char *value)
 		return (1);
 
 	list_t *node = info->env;
+
 	char *prefix;
 
 	while (node)
