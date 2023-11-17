@@ -5,15 +5,17 @@
  * @info: structure with potential arguments.
  * Return: Always 0
  */
-char **update_environment(info_t *info)
+void free_string_array(char **array);
+
+char **update_environ(info_t *info)
 {
-	if (!info->environment || info->env_changed)
+	if (!info->environ || info->env_changed)
 	{
-		free_string_array(info->environment);
-		info->environment = list_to_strings(info->env);
+		free_string_array(info->environ);
+		info->environ = list_to_strings(info->environ);
 		info->env_changed = 0;
 	}
-	return (info->environment);
+	return info->environ;
 }
 
 /**
@@ -22,12 +24,16 @@ char **update_environment(info_t *info)
  * @variable: environment variable property
  * Return: 1 on delete, 0 otherwise.
  */
-int remove_environment_variable(info_t *info, char *variable)
+int set_environ_variable(info_t *info, char *variable, char *value)
 {
-	if (!info->env || !variable)
+	if (!variable || !value)
 		return (0);
 
-	size_t index = 0;
+	char *env_entry = concat_strings(variable, "=", value);
+
+	if (!env_entry)
+		return (1);
+
 	list_t *node = info->env;
 	char *prefix;
 
@@ -36,16 +42,18 @@ int remove_environment_variable(info_t *info, char *variable)
 		prefix = starts_with(node->str, variable);
 		if (prefix && *prefix == '=')
 		{
-			info->env_changed = delete_node_at_index(&(info->env), index);
-			index = 0;
-			node = info->env;
-			continue;
+			free(node->str);
+			node->str = env_entry;
+			info->env_changed = 1;
+			return (0);
 		}
 		node = node->next;
-		index++;
 	}
 
-	return (info->env_changed);
+	add_node_end(&(info->env), env_entry, 0);
+	free(env_entry);
+	info->env_changed = 1;
+	return (0);
 }
 
 /**
@@ -56,7 +64,7 @@ int remove_environment_variable(info_t *info, char *variable)
  * @value: environment variable value
  * Return: Always 0.
  */
-int set_environment_variable(info_t *info, char *variable, char *value)
+int set_environ_variable(info_t *info, char *variable, char *value)
 {
 	if (!variable || !value)
 		return (0);

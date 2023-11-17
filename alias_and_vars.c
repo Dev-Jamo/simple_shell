@@ -16,22 +16,22 @@ int is_chain(info_t *info, char *buf, size_t *p)
 
 	if ((currentChar == '|' || currentChar == '&') && currentChar == nextChar)
 	{
-	buf[j] = 0;
-	j++;
-	info->cmd_buf_type = (currentChar == '|') ? CMD_OR : CMD_AND;
+		buf[j] = 0;
+		j++;
+		info->cmd_buf_type = (currentChar == '|') ? CMD_OR : CMD_AND;
 	}
 	else if (currentChar == ';')
 	{
-	buf[j] = 0;
-	info->cmd_buf_type = CMD_CHAIN;
+		buf[j] = 0;
+		info->cmd_buf_type = CMD_CHAIN;
 	}
 	else
 	{
-	(return 0;)
+		return (0);
 	}
 
 	*p = j;
-	(return 1);
+	return (1);
 }
 
 /**
@@ -71,25 +71,27 @@ int replace_alias(info_t *info)
 	list_t *node;
 	char *p;
 
+	char *newArgv0;
+
 	node = node_starts_with(info->alias, info->argv[0], '=');
 	if (!node)
-	(return 0;)
+		return (0);
 
 	p = _strchr(node->str, '=');
 	if (!p)
-	(return 0;)
+		return (0);
 
 	p++;
 
-	char *newArgv0 = _strdup(p);
+	newArgv0 = _strdup(p);
 
 	if (!newArgv0)
-	(return 0;)
+		return (0);
 
 	free(info->argv[0]);
 	info->argv[0] = newArgv0;
 
-	(return 1;)
+	return (1);
 }
 
 /**
@@ -139,7 +141,7 @@ int replace_vars(info_t *info)
 		}
 	}
 	}
-	(return 0;)
+	return (0);
 }
 
 /**
@@ -156,5 +158,5 @@ int replace_string(char **old, char *new)
 	free(*old);
 	*old = new;
 	}
-	(return 1;)
+	return (1);
 }
